@@ -4,3 +4,8 @@ export * from './bookings';
 export * from './messages';
 export * from './onboardingOptions';
 export * from './images';
+export * from './user';
+export * from './paymentMethods';
+export * from './addresses';
+export * from './notifications';
+export * from './faqs';

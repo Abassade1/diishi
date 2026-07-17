@@ -8,6 +8,7 @@ import { Screen, ChefCard, Card } from '@/components';
 import { colors, fonts, fontSizes, radii, spacing } from '@/theme';
 import { chefs } from '@/data';
 import { Cuisine } from '@/types';
+import { useAppContext } from '@/context/AppContext';
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -25,8 +26,10 @@ const CUISINE_FILTERS: (Cuisine | 'All')[] = [
 
 export function HomeScreen() {
   const navigation = useNavigation<Nav>();
+  const { user, notifications } = useAppContext();
   const [query, setQuery] = useState('');
   const [cuisine, setCuisine] = useState<(Cuisine | 'All')>('All');
+  const unreadCount = notifications.filter((n) => !n.read).length;
 
   const filteredChefs = useMemo(() => {
     return chefs.filter((chef) => {
@@ -54,11 +57,16 @@ export function HomeScreen() {
                 <Text style={styles.greeting}>Good afternoon 👋</Text>
                 <View style={styles.locationRow}>
                   <Ionicons name="location" size={14} color={colors.primary} />
-                  <Text style={styles.location}>Lekki Phase 1, Lagos</Text>
+                  <Text style={styles.location}>{user ? `${user.area}, ${user.city}` : 'Lagos'}</Text>
                 </View>
               </View>
-              <Pressable style={styles.bellButton}>
+              <Pressable style={styles.bellButton} onPress={() => navigation.navigate('Notifications')}>
                 <Ionicons name="notifications-outline" size={20} color={colors.text} />
+                {unreadCount > 0 && (
+                  <View style={styles.bellBadge}>
+                    <Text style={styles.bellBadgeText}>{unreadCount > 9 ? '9+' : unreadCount}</Text>
+                  </View>
+                )}
               </Pressable>
             </View>
 
@@ -179,6 +187,23 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  bellBadge: {
+    position: 'absolute',
+    top: 4,
+    right: 4,
+    minWidth: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: colors.danger,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 3,
+  },
+  bellBadgeText: {
+    fontFamily: fonts.bodyBold,
+    fontSize: 9,
+    color: colors.white,
   },
   searchBar: {
     flexDirection: 'row',

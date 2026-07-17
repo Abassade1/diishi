@@ -90,3 +90,60 @@ export interface OnboardingPreferences {
   dietaryPreferences: string[];
   cookingCadence: string | null;
 }
+
+export interface User {
+  id: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  avatar: string;
+  city: 'Lagos' | 'Abuja';
+  area: string;
+}
+
+export type SocialProvider = 'google' | 'facebook' | 'x';
+
+export type CardBrand = 'Visa' | 'Mastercard' | 'Verve';
+
+export interface PaymentMethod {
+  id: string;
+  brand: CardBrand;
+  last4: string;
+  expiry: string; // MM/YY
+  isDefault: boolean;
+}
+
+export type AddressLabel = 'Home' | 'Work' | 'Other';
+
+export interface Address {
+  id: string;
+  label: AddressLabel;
+  line: string;
+  city: 'Lagos' | 'Abuja';
+  isDefault: boolean;
+}
+
+export interface NotificationPreferences {
+  bookingReminders: boolean;
+  chefMessages: boolean;
+  promotions: boolean;
+  weeklyMenuSuggestions: boolean;
+}
+
+export type AppNotificationType = 'booking' | 'message' | 'promo' | 'system';
+
+export interface AppNotification {
+  id: string;
+  type: AppNotificationType;
+  title: string;
+  body: string;
+  timestamp: string;
+  read: boolean;
+}
+
+export interface Faq {
+  id: string;
+  question: string;
+  answer: string;
+  category: string;
+}

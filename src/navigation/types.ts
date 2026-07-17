@@ -16,6 +16,10 @@ export type BookingFlowParamList = {
 };
 
 export type RootStackParamList = {
+  AuthWelcome: undefined;
+  SignUp: undefined;
+  Login: undefined;
+  OtpVerification: { phone: string; mode: 'signup' | 'login'; fullName?: string; email?: string };
   Onboarding: undefined;
   MainTabs: NavigatorScreenParams<MainTabParamList>;
   ChefProfile: { chefId: string };
@@ -25,6 +29,17 @@ export type RootStackParamList = {
   BookingConfirmed: undefined;
   RateVisit: { bookingId: string };
   ChatThread: { threadId: string };
+  EditProfile: undefined;
+  EditPreferences: undefined;
+  PaymentMethods: undefined;
+  AddPaymentMethod: undefined;
+  Addresses: undefined;
+  AddAddress: undefined;
+  NotificationPreferences: undefined;
+  Notifications: undefined;
+  ReferAFriend: undefined;
+  HelpSupport: undefined;
+  TermsPrivacy: { tab?: 'terms' | 'privacy' } | undefined;
 };
 
 declare global {

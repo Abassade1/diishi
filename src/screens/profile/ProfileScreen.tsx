@@ -1,41 +1,53 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FlatList, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/navigation/types';
-import { Screen, Card, ChefCard } from '@/components';
+import { Screen, Card, ChefCard, ConfirmModal } from '@/components';
 import { colors, fonts, fontSizes, radii, spacing } from '@/theme';
 import { chefs } from '@/data';
-import { chefAvatars } from '@/data/images';
 import { useAppContext } from '@/context/AppContext';
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
-const SETTINGS_ITEMS: { icon: keyof typeof Ionicons.glyphMap; label: string }[] = [
-  { icon: 'card-outline', label: 'Payment methods' },
-  { icon: 'location-outline', label: 'Delivery addresses' },
-  { icon: 'notifications-outline', label: 'Notification preferences' },
-  { icon: 'gift-outline', label: 'Refer a friend' },
-  { icon: 'help-circle-outline', label: 'Help & support' },
-  { icon: 'document-text-outline', label: 'Terms & privacy' },
+const SETTINGS_ITEMS: {
+  icon: keyof typeof Ionicons.glyphMap;
+  label: string;
+  route: keyof RootStackParamList;
+}[] = [
+  { icon: 'card-outline', label: 'Payment methods', route: 'PaymentMethods' },
+  { icon: 'location-outline', label: 'Delivery addresses', route: 'Addresses' },
+  { icon: 'notifications-outline', label: 'Notification preferences', route: 'NotificationPreferences' },
+  { icon: 'gift-outline', label: 'Refer a friend', route: 'ReferAFriend' },
+  { icon: 'help-circle-outline', label: 'Help & support', route: 'HelpSupport' },
+  { icon: 'document-text-outline', label: 'Terms & privacy', route: 'TermsPrivacy' },
 ];
 
 export function ProfileScreen() {
   const navigation = useNavigation<Nav>();
-  const { preferences, savedChefIds } = useAppContext();
+  const { user, preferences, savedChefIds, logOut } = useAppContext();
   const savedChefs = chefs.filter((c) => savedChefIds.includes(c.id));
+  const [logOutModalVisible, setLogOutModalVisible] = useState(false);
+
+  const confirmLogOut = () => {
+    setLogOutModalVisible(false);
+    logOut();
+    navigation.reset({ index: 0, routes: [{ name: 'AuthWelcome' }] });
+  };
+
+  if (!user) return null;
 
   return (
     <Screen>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
-          <Image source={{ uri: chefAvatars.woman4 }} style={styles.userAvatar} />
+          <Image source={{ uri: user.avatar }} style={styles.userAvatar} />
           <View style={{ flex: 1 }}>
-            <Text style={styles.userName}>Ada Bassey</Text>
-            <Text style={styles.userLocation}>Lekki Phase 1, Lagos</Text>
+            <Text style={styles.userName}>{user.fullName}</Text>
+            <Text style={styles.userLocation}>{user.area}, {user.city}</Text>
           </View>
-          <Pressable style={styles.editButton}>
+          <Pressable style={styles.editButton} onPress={() => navigation.navigate('EditProfile')}>
             <Ionicons name="create-outline" size={18} color={colors.primary} />
           </Pressable>
         </View>
@@ -43,7 +55,7 @@ export function ProfileScreen() {
         <Card style={styles.prefsCard}>
           <View style={styles.prefsHeaderRow}>
             <Text style={styles.sectionTitle}>Household preferences</Text>
-            <Pressable onPress={() => navigation.navigate('Onboarding')}>
+            <Pressable onPress={() => navigation.navigate('EditPreferences')}>
               <Text style={styles.editLink}>Edit</Text>
             </Pressable>
           </View>
@@ -88,6 +100,7 @@ export function ProfileScreen() {
             {SETTINGS_ITEMS.map((item, idx) => (
               <Pressable
                 key={item.label}
+                onPress={() => navigation.navigate(item.route as any)}
                 style={[styles.settingsRow, idx === SETTINGS_ITEMS.length - 1 && styles.settingsRowLast]}
               >
                 <Ionicons name={item.icon} size={20} color={colors.textMuted} />
@@ -98,13 +111,21 @@ export function ProfileScreen() {
           </Card>
         </View>
 
-        <Pressable style={styles.logoutButton}>
+        <Pressable style={styles.logoutButton} onPress={() => setLogOutModalVisible(true)}>
           <Ionicons name="log-out-outline" size={18} color={colors.danger} />
           <Text style={styles.logoutText}>Log out</Text>
         </Pressable>
 
         <Text style={styles.versionText}>Diishi v1.0.0 (prototype)</Text>
       </ScrollView>
+      <ConfirmModal
+        visible={logOutModalVisible}
+        title="Log out"
+        message="Are you sure you want to log out of Diishi?"
+        confirmLabel="Log out"
+        onConfirm={confirmLogOut}
+        onCancel={() => setLogOutModalVisible(false)}
+      />
     </Screen>
   );
 }

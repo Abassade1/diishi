@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@/navigation/types';
@@ -11,7 +11,6 @@ import {
   dietaryPreferenceOptions,
   householdSizeOptions,
 } from '@/data/onboardingOptions';
-import { chefCovers } from '@/data/images';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Onboarding'>;
 
@@ -19,7 +18,6 @@ const STEPS = ['Household', 'Diet', 'Cadence'];
 
 export function OnboardingScreen({ navigation }: Props) {
   const { preferences, setPreferences, completeOnboarding } = useAppContext();
-  const [started, setStarted] = useState(false);
   const [step, setStep] = useState(0);
 
   const canContinue =
@@ -49,27 +47,6 @@ export function OnboardingScreen({ navigation }: Props) {
         : [...withoutNoRestrictions, label],
     });
   };
-
-  if (!started) {
-    return (
-      <Screen edges={['top', 'bottom']}>
-        <View style={styles.welcomeContainer}>
-          <Image source={{ uri: chefCovers.cover1 }} style={styles.welcomeImage} />
-          <View style={styles.welcomeBody}>
-            <Text style={styles.welcomeKicker}>Welcome to Diishi</Text>
-            <Text style={styles.welcomeTitle}>Home-cooked meals, without the home cooking</Text>
-            <Text style={styles.welcomeSubtitle}>
-              Tell us about your household so we can match you with vetted private chefs across
-              Lagos and Abuja.
-            </Text>
-          </View>
-          <View style={styles.welcomeFooter}>
-            <Button label="Get started" onPress={() => setStarted(true)} icon="arrow-forward" iconPosition="right" />
-          </View>
-        </View>
-      </Screen>
-    );
-  }
 
   return (
     <Screen>
@@ -185,41 +162,6 @@ export function OnboardingScreen({ navigation }: Props) {
 }
 
 const styles = StyleSheet.create({
-  welcomeContainer: {
-    flex: 1,
-  },
-  welcomeImage: {
-    width: '100%',
-    height: '48%',
-  },
-  welcomeBody: {
-    flex: 1,
-    paddingHorizontal: spacing.xl,
-    paddingTop: spacing.xl,
-  },
-  welcomeKicker: {
-    fontFamily: fonts.bodySemiBold,
-    fontSize: fontSizes.sm,
-    color: colors.primary,
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-    marginBottom: spacing.sm,
-  },
-  welcomeTitle: {
-    fontFamily: fonts.displayBold,
-    fontSize: fontSizes.xxxl,
-    color: colors.text,
-    marginBottom: spacing.md,
-  },
-  welcomeSubtitle: {
-    fontFamily: fonts.body,
-    fontSize: fontSizes.md,
-    color: colors.textMuted,
-    lineHeight: 22,
-  },
-  welcomeFooter: {
-    padding: spacing.xl,
-  },
   header: {
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.md,
