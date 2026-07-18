@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RootStackParamList } from '@/navigation/types';
 import { colors, fonts, fontSizes, radii, spacing } from '@/theme';
 import { getChefById, getThreadById } from '@/data';
@@ -24,6 +25,7 @@ export function ChatThreadScreen({ route, navigation }: Props) {
   const { threadId } = route.params;
   const thread = getThreadById(threadId);
   const chef = thread ? getChefById(thread.chefId) : undefined;
+  const insets = useSafeAreaInsets();
   const [messages, setMessages] = useState<ChatMessage[]>(thread?.messages ?? []);
   const [draft, setDraft] = useState('');
 
@@ -82,7 +84,7 @@ export function ChatThreadScreen({ route, navigation }: Props) {
         }}
       />
 
-      <View style={styles.inputBar}>
+      <View style={[styles.inputBar, { paddingBottom: spacing.md + insets.bottom }]}>
         <TextInput
           value={draft}
           onChangeText={setDraft}

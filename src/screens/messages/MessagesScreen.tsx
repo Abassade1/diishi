@@ -2,27 +2,33 @@ import React from 'react';
 import { FlatList, Image, StyleSheet, Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RootStackParamList } from '@/navigation/types';
 import { Screen, Card } from '@/components';
 import { colors, fonts, fontSizes, radii, spacing } from '@/theme';
 import { chatThreads, getChefById } from '@/data';
 import { Ionicons } from '@expo/vector-icons';
+import { TAB_BAR_BASE_HEIGHT } from '@/navigation/tabBarMetrics';
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
 export function MessagesScreen() {
   const navigation = useNavigation<Nav>();
+  const insets = useSafeAreaInsets();
   const sortedThreads = [...chatThreads].sort((a, b) => b.unread - a.unread);
 
   return (
-    <Screen>
+    <Screen edges={['top']}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Messages</Text>
       </View>
       <FlatList
         data={sortedThreads}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.listContent}
+        contentContainerStyle={[
+          styles.listContent,
+          { paddingBottom: TAB_BAR_BASE_HEIGHT + insets.bottom + spacing.lg },
+        ]}
         showsVerticalScrollIndicator={false}
         ItemSeparatorComponent={() => <View style={{ height: spacing.sm }} />}
         renderItem={({ item }) => {

@@ -3,6 +3,7 @@ import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-nati
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RootStackParamList } from '@/navigation/types';
 import { Screen, Card, Tag, Button } from '@/components';
 import { colors, fonts, fontSizes, radii, spacing } from '@/theme';
@@ -10,6 +11,7 @@ import { getChefById } from '@/data';
 import { useAppContext } from '@/context/AppContext';
 import { formatDate, formatNaira } from '@/utils/format';
 import { Booking } from '@/types';
+import { TAB_BAR_BASE_HEIGHT } from '@/navigation/tabBarMetrics';
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -31,6 +33,7 @@ function monthGrid(monthOffset: number) {
 
 export function BookingsScreen() {
   const navigation = useNavigation<Nav>();
+  const insets = useSafeAreaInsets();
   const { bookings } = useAppContext();
   const [tab, setTab] = useState<'upcoming' | 'history'>('upcoming');
 
@@ -50,7 +53,7 @@ export function BookingsScreen() {
   const list = tab === 'upcoming' ? upcoming : history;
 
   return (
-    <Screen>
+    <Screen edges={['top']}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Bookings</Text>
       </View>
@@ -70,7 +73,13 @@ export function BookingsScreen() {
         </Pressable>
       </View>
 
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        contentContainerStyle={[
+          styles.content,
+          { paddingBottom: TAB_BAR_BASE_HEIGHT + insets.bottom + spacing.lg },
+        ]}
+        showsVerticalScrollIndicator={false}
+      >
         {tab === 'upcoming' && (
           <View style={styles.calendarCard}>
             <Text style={styles.calendarMonth}>{label}</Text>

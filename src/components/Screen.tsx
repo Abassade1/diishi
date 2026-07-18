@@ -8,7 +8,7 @@ interface ScreenProps extends PropsWithChildren {
   edges?: Edge[];
 }
 
-export function Screen({ children, style, edges = ['top'] }: ScreenProps) {
+export function Screen({ children, style, edges = ['top', 'bottom'] }: ScreenProps) {
   return (
     <SafeAreaView style={[styles.safe, style]} edges={edges}>
       {children}

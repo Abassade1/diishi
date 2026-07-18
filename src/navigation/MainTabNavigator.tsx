@@ -1,12 +1,14 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MainTabParamList } from './types';
 import { HomeScreen } from '@/screens/home/HomeScreen';
 import { BookingsScreen } from '@/screens/booking/BookingsScreen';
 import { MessagesScreen } from '@/screens/messages/MessagesScreen';
 import { ProfileScreen } from '@/screens/profile/ProfileScreen';
 import { colors, fonts, fontSizes } from '@/theme';
+import { TAB_BAR_BASE_HEIGHT } from './tabBarMetrics';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
@@ -18,6 +20,8 @@ const iconMap: Record<keyof MainTabParamList, { active: keyof typeof Ionicons.gl
 };
 
 export function MainTabNavigator() {
+  const insets = useSafeAreaInsets();
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -27,8 +31,8 @@ export function MainTabNavigator() {
         tabBarStyle: {
           backgroundColor: colors.surface,
           borderTopColor: colors.border,
-          height: 62,
-          paddingBottom: 8,
+          height: TAB_BAR_BASE_HEIGHT + insets.bottom,
+          paddingBottom: Math.max(insets.bottom, 8),
           paddingTop: 8,
         },
         tabBarLabelStyle: {

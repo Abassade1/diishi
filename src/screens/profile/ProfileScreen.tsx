@@ -3,11 +3,13 @@ import { FlatList, Image, Pressable, ScrollView, StyleSheet, Text, View } from '
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RootStackParamList } from '@/navigation/types';
 import { Screen, Card, ChefCard, ConfirmModal } from '@/components';
 import { colors, fonts, fontSizes, radii, spacing } from '@/theme';
 import { chefs } from '@/data';
 import { useAppContext } from '@/context/AppContext';
+import { TAB_BAR_BASE_HEIGHT } from '@/navigation/tabBarMetrics';
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -26,6 +28,7 @@ const SETTINGS_ITEMS: {
 
 export function ProfileScreen() {
   const navigation = useNavigation<Nav>();
+  const insets = useSafeAreaInsets();
   const { user, preferences, savedChefIds, logOut } = useAppContext();
   const savedChefs = chefs.filter((c) => savedChefIds.includes(c.id));
   const [logOutModalVisible, setLogOutModalVisible] = useState(false);
@@ -39,8 +42,14 @@ export function ProfileScreen() {
   if (!user) return null;
 
   return (
-    <Screen>
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+    <Screen edges={['top']}>
+      <ScrollView
+        contentContainerStyle={[
+          styles.content,
+          { paddingBottom: TAB_BAR_BASE_HEIGHT + insets.bottom + spacing.lg },
+        ]}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.header}>
           <Image source={{ uri: user.avatar }} style={styles.userAvatar} />
           <View style={{ flex: 1 }}>

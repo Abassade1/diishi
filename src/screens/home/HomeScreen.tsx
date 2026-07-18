@@ -3,12 +3,14 @@ import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-na
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RootStackParamList } from '@/navigation/types';
 import { Screen, ChefCard, Card } from '@/components';
 import { colors, fonts, fontSizes, radii, spacing } from '@/theme';
 import { chefs } from '@/data';
 import { Cuisine } from '@/types';
 import { useAppContext } from '@/context/AppContext';
+import { TAB_BAR_BASE_HEIGHT } from '@/navigation/tabBarMetrics';
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -26,6 +28,7 @@ const CUISINE_FILTERS: (Cuisine | 'All')[] = [
 
 export function HomeScreen() {
   const navigation = useNavigation<Nav>();
+  const insets = useSafeAreaInsets();
   const { user, notifications } = useAppContext();
   const [query, setQuery] = useState('');
   const [cuisine, setCuisine] = useState<(Cuisine | 'All')>('All');
@@ -44,11 +47,14 @@ export function HomeScreen() {
   }, [query, cuisine]);
 
   return (
-    <Screen>
+    <Screen edges={['top']}>
       <FlatList
         data={filteredChefs}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.listContent}
+        contentContainerStyle={[
+          styles.listContent,
+          { paddingBottom: TAB_BAR_BASE_HEIGHT + insets.bottom + spacing.lg },
+        ]}
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={
           <View>

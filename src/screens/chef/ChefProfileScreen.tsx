@@ -2,6 +2,7 @@ import React from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RootStackParamList } from '@/navigation/types';
 import { Button, StarRating, Tag } from '@/components';
 import { colors, fonts, fontSizes, radii, spacing } from '@/theme';
@@ -14,6 +15,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'ChefProfile'>;
 export function ChefProfileScreen({ route, navigation }: Props) {
   const { chefId } = route.params;
   const chef = getChefById(chefId);
+  const insets = useSafeAreaInsets();
   const { savedChefIds, toggleSavedChef } = useAppContext();
   const isSaved = savedChefIds.includes(chefId);
 
@@ -127,7 +129,7 @@ export function ChefProfileScreen({ route, navigation }: Props) {
         </View>
       </ScrollView>
 
-      <View style={styles.footer}>
+      <View style={[styles.footer, { paddingBottom: spacing.lg + insets.bottom }]}>
         <Pressable
           style={styles.messageButton}
           onPress={() => {
